@@ -17,21 +17,25 @@ import org.junit.Test;
 
 public class SampleDaoTest {
 	static Logger log = Logger.getLogger(SampleDaoTest.class);
+	static SampleDao dao;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
 
 	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	public static void tearDownAfterClass() throws Exception {	
 	}
 
 	@Before
 	public void setUp() throws Exception {
+		dao = new SampleDao(false);
+/*		dao = new SampleDao();*/
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		dao.back();
 	}
 
 	@Test
@@ -40,18 +44,33 @@ public class SampleDaoTest {
 	}
 
 	@Test
-	public void testSelectAll() throws SQLException, ClassNotFoundException {
-		SampleDao dao = new SampleDao();
-		
-		List<Map<String,Object>> list = dao.selectAll();
-		
+	public void testSelectAll() throws SQLException, ClassNotFoundException {		
+		List<Map<String,Object>> list = dao.selectAll();		
 		Assert.assertNotNull(list);
 		Assert.assertTrue(list.size()>0);
-		Assert.assertSame(3, list.size());
+		Assert.assertSame(8, list.size());
 		for (Map<String, Object> map : list) {
 			log.debug(map.get("sabun"));
 			log.debug(map.get("name"));
-		}
+		}		
 	}
-
+	@Test
+	public void testSelectOne() throws Exception {
+		int sabun = 1000;
+		SampleDao dao = new SampleDao();
+		Map<String,Object> map = dao.selectOne(sabun);
+		Assert.assertNotNull(map);
+		Assert.assertEquals(sabun, map.get("sabun"));
+		Assert.assertEquals("aaaa", map.get("name"));
+		Assert.assertEquals(1111, map.get("pay"));
+		}
+	@Test
+	public void testInsertOne() throws SQLException{ 
+		int sabun = 4000;
+		int pay = 4444;
+		String name = "Gopdan";
+		int result = dao.insertOne(sabun, name, pay);
+		Assert.assertSame(1, result);
+	}
+	
 }
